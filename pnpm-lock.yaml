@@ -1,0 +1,49 @@
+lockfileVersion: '9.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+importers:
+
+  .:
+    dependencies:
+      graph:
+        specifier: github:egonSchiele/graph
+        version: https://codeload.github.com/egonSchiele/graph/tar.gz/9fb942593e6cd83ea5e72db9209d985ff001db51
+    devDependencies:
+      '@types/node':
+        specifier: ^25.0.2
+        version: 25.0.2
+      typescript:
+        specifier: ^5.9.3
+        version: 5.9.3
+
+packages:
+
+  '@types/node@25.0.2':
+    resolution: {integrity: sha512-gWEkeiyYE4vqjON/+Obqcoeffmk0NF15WSBwSs7zwVA2bAbTaE0SJ7P0WNGoJn8uE7fiaV5a7dKYIJriEqOrmA==}
+
+  graph@https://codeload.github.com/egonSchiele/graph/tar.gz/9fb942593e6cd83ea5e72db9209d985ff001db51:
+    resolution: {tarball: https://codeload.github.com/egonSchiele/graph/tar.gz/9fb942593e6cd83ea5e72db9209d985ff001db51}
+    version: 0.0.20
+
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  undici-types@7.16.0:
+    resolution: {integrity: sha512-Zz+aZWSj8LE6zoxD+xrjh4VfkIG8Ya6LvYkZqtUQGJPZjYl53ypCaUwWqo7eI0x66KBGeRo+mlBEkMSeSZ38Nw==}
+
+snapshots:
+
+  '@types/node@25.0.2':
+    dependencies:
+      undici-types: 7.16.0
+
+  graph@https://codeload.github.com/egonSchiele/graph/tar.gz/9fb942593e6cd83ea5e72db9209d985ff001db51: {}
+
+  typescript@5.9.3: {}
+
+  undici-types@7.16.0: {}
