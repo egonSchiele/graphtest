@@ -11,7 +11,7 @@ function add(a: number, b: number): number {
 
 const tools = [
   {
-    type: "function",
+    type: "function" as const,
     function: {
       name: "add",
       description: "Add two numbers",
@@ -35,32 +35,73 @@ const tools = [
 
 type State = {
   count: number;
-  messages: string[];
+  messages: any[];
+  toolCalls?: any[];
 };
 
 const graph = new Graph<State>();
 
 graph.node("llm", async (state) => {
+  console.log("state", JSON.stringify(state, null, 2));
   const completion = await client.chat.completions.create({
     model: "gpt-4o",
     tools,
-    messages: [{ role: "developer", content: "Add 1 + 1" }],
+    messages: state.messages,
   });
-
-  console.log(completion.choices[0].message.content);
-  return state;
+  console.log(">>>", JSON.stringify(completion.choices, null, 2));
+  const message = completion.choices[0].message;
+  const toolCalls = completion.choices[0].message.tool_calls;
+  const newState = { ...state };
+  if (message && message.content)
+    newState.messages.push({
+      role: "assistant",
+      content: message.content || "",
+    });
+  if (toolCalls) {
+    newState.toolCalls = toolCalls.map((toolCall: any) => toolCall.function);
+    console.log("FUCK another tool call");
+  }
+  console.log("new state", JSON.stringify(newState, null, 2));
+  return newState;
 });
 
-graph.node("tools", async (data) => {
-  return data;
+graph.node("tools", async (state) => {
+  if (state.toolCalls) {
+    for (const toolCall of state.toolCalls) {
+      if (toolCall.name === "add") {
+        const args = JSON.parse(toolCall.arguments);
+        const result = add(args.a, args.b);
+        const newMessage = {
+          role: "assistant",
+          content: result.toString(),
+        };
+        const newState = { ...state };
+        newState.messages.push(newMessage);
+        newState.toolCalls = [];
+        return newState;
+      }
+    }
+  }
+  return { ...state, toolCalls: [] };
 });
 
-graph.node("finish", async (data) => data);
+graph.node("finish", async (state) => state);
 
-graph.edge("start", "tools");
+graph.edge("llm", async (state) => {
+  console.log("in conditional edge:", JSON.stringify(state, null, 2));
+  if (state.toolCalls && state.toolCalls.length > 0) {
+    return "tools";
+  }
+  return "finish";
+});
 
-const initialState: State = { count: 0, messages: [] };
-const finalState = graph.run("start", initialState);
+graph.edge("tools", "llm");
+
+const initialState: State = {
+  count: 0,
+  messages: [{ role: "user", content: "Add 1 + 1" }],
+};
+const finalState = graph.run("llm", initialState);
 
 console.log(finalState);
 
