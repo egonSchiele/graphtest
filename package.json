@@ -16,6 +16,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "graph": "github:egonSchiele/graph"
+    "graph": "github:egonSchiele/graph",
+    "openai": "^6.10.0"
   }
 }

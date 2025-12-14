@@ -1,39 +1,65 @@
 import { Graph } from "graph";
+import OpenAI from "openai";
+
+const client = new OpenAI({
+  apiKey: process.env["OPENAI_API_KEY"], // This is the default and can be omitted
+});
+
+function add(a: number, b: number): number {
+  return a + b;
+}
+
+const tools = [
+  {
+    type: "function",
+    function: {
+      name: "add",
+      description: "Add two numbers",
+      parameters: {
+        type: "object",
+        properties: {
+          a: {
+            type: "number",
+            description: "The first number",
+          },
+          b: {
+            type: "number",
+            description: "The second number",
+          },
+        },
+        required: ["a", "b"],
+      },
+    },
+  },
+];
 
 type State = {
   count: number;
-  log: string[];
+  messages: string[];
 };
 
 const graph = new Graph<State>();
 
-graph.node("start", (data) => {
-  return {
-    ...data,
-    log: [...data.log, "Starting computation"],
-  };
+graph.node("llm", async (state) => {
+  const completion = await client.chat.completions.create({
+    model: "gpt-4o",
+    tools,
+    messages: [{ role: "developer", content: "Add 1 + 1" }],
+  });
+
+  console.log(completion.choices[0].message.content);
+  return state;
 });
 
-graph.node("increment", (data) => {
-  return {
-    ...data,
-    count: data.count + 1,
-    log: [...data.log, `Incremented count to ${data.count + 1}`],
-  };
+graph.node("tools", async (data) => {
+  return data;
 });
 
-graph.node("finish", (data) => data);
+graph.node("finish", async (data) => data);
 
-graph.edge("start", "increment");
-graph.edge("increment", (data) => {
-  if (data.count < 5) {
-    return "increment";
-  } else {
-    return "finish";
-  }
-});
+graph.edge("start", "tools");
 
-const initialState: State = { count: 0, log: [] };
+const initialState: State = { count: 0, messages: [] };
 const finalState = graph.run("start", initialState);
 
 console.log(finalState);
