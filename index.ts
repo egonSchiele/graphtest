@@ -65,6 +65,7 @@ graph.node("llm", async (state) => {
 graph.node("tools", async (state) => {
   const lastMessage = state.messages[state.messages.length - 1];
   if (lastMessage.tool_calls) {
+    const newState = { ...state };
     for (const toolCall of lastMessage.tool_calls) {
       if (toolCall.function.name === "add") {
         const args = JSON.parse(toolCall.function.arguments);
@@ -74,9 +75,10 @@ graph.node("tools", async (state) => {
           content: result.toString(),
           tool_call_id: toolCall.id,
         };
-        return { ...state, messages: [...state.messages, newMessage] };
+        newState.messages.push(newMessage);
       }
     }
+    return newState;
   }
   return state;
 });
@@ -93,10 +95,8 @@ graph.conditionalEdge("llm", ["tools", "finish"], async (state) => {
 
 graph.edge("tools", "llm");
 
-
-
 async function main() {
-  const input = "What is 1 + 1?";
+  const input = "What is 1 + 10 + 100?";
   const initialState: State = {
     count: 0,
     messages: [{ role: "user", content: input }],
@@ -106,4 +106,4 @@ async function main() {
   console.log(finalState);
 }
 main();
-// graph.prettyPrint();
+graph.prettyPrint();
