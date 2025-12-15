@@ -38,7 +38,9 @@ type State = {
   messages: any[];
 };
 
-const graph = new Graph<State>({
+const nodes = ["llm", "tools", "finish"] as const;
+type Node = typeof nodes[number];
+const graph = new Graph<State, Node>(nodes, {
   debug: true,
   logData: true,
 });
@@ -81,7 +83,7 @@ graph.node("tools", async (state) => {
 
 graph.node("finish", async (state) => state);
 
-graph.edge("llm", async (state) => {
+graph.conditionalEdge("llm", ["tools", "finish"], async (state) => {
   const lastMessage = state.messages[state.messages.length - 1];
   if (lastMessage.tool_calls && lastMessage.tool_calls.length > 0) {
     return "tools";

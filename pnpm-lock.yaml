@@ -10,7 +10,7 @@ importers:
     dependencies:
       graph:
         specifier: github:egonSchiele/graph
-        version: https://codeload.github.com/egonSchiele/graph/tar.gz/0f09dee86191434ae04af64050bee7206391638f
+        version: https://codeload.github.com/egonSchiele/graph/tar.gz/7091ea337b18b15d7bbcfe3f5ab529ee344aaccc
       openai:
         specifier: ^6.10.0
         version: 6.10.0
@@ -27,8 +27,8 @@ packages:
   '@types/node@25.0.2':
     resolution: {integrity: sha512-gWEkeiyYE4vqjON/+Obqcoeffmk0NF15WSBwSs7zwVA2bAbTaE0SJ7P0WNGoJn8uE7fiaV5a7dKYIJriEqOrmA==}
 
-  graph@https://codeload.github.com/egonSchiele/graph/tar.gz/0f09dee86191434ae04af64050bee7206391638f:
-    resolution: {tarball: https://codeload.github.com/egonSchiele/graph/tar.gz/0f09dee86191434ae04af64050bee7206391638f}
+  graph@https://codeload.github.com/egonSchiele/graph/tar.gz/7091ea337b18b15d7bbcfe3f5ab529ee344aaccc:
+    resolution: {tarball: https://codeload.github.com/egonSchiele/graph/tar.gz/7091ea337b18b15d7bbcfe3f5ab529ee344aaccc}
     version: 0.0.21
 
   openai@6.10.0:
@@ -57,7 +57,7 @@ snapshots:
     dependencies:
       undici-types: 7.16.0
 
-  graph@https://codeload.github.com/egonSchiele/graph/tar.gz/0f09dee86191434ae04af64050bee7206391638f: {}
+  graph@https://codeload.github.com/egonSchiele/graph/tar.gz/7091ea337b18b15d7bbcfe3f5ab529ee344aaccc: {}
 
   openai@6.10.0: {}
 
